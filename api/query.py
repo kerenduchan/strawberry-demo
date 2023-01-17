@@ -28,6 +28,18 @@ class Query:
                 total_items_count=window.total_items_count)
 
     @strawberry.field
-    async def authors(self, order_by: str | None = "name") -> List[Author]:
+    async def authors(self,
+                      order_by: str | None = "title",
+                      limit: int = 100,
+                      offset: int = 0,
+                      name: str | None = None) -> PaginationWindow[Author]:
+        filters = {}
+        if name:
+            filters['name'] = name
+
         async with session_maker() as session:
-            return await db.ops.author.get(session, order_by)
+            window = await db.ops.author.get(
+                session, limit, offset, order_by, filters)
+            return PaginationWindow(
+                items=[Author.from_db(item) for item in window.items],
+                total_items_count=window.total_items_count)
