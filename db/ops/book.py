@@ -1,11 +1,11 @@
-from sqlalchemy import select
 from db.schema import Book
+from db.ops.pagination_window import PaginationWindow, get_pagination_window
 
 
-async def get(session, order_by):
-    sql = select(Book).order_by(order_by)
-    res = await session.execute(sql)
-    return res.scalars().all()
+async def get(session, limit, offset, order_by, filters) \
+        -> PaginationWindow:
+    return await get_pagination_window(
+        session, 'Book', order_by, limit, offset, filters)
 
 
 async def create(session, title, author_id) -> Book:
