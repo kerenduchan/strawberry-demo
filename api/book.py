@@ -24,8 +24,8 @@ class Book:
         rec = await info.context.dataloaders['author_by_id'].load(int(self.author_id))
         return api.author.Author.from_db(rec)
 
-    @classmethod
-    def from_db(cls, row: db.schema.Book) -> "Book":
-        return cls(id=row.id,
-                   title=row.title,
-                   author_id=row.author_id)
+    @staticmethod
+    def from_db(row: db.schema.Book) -> "Book":
+        return Book(id=row.id,
+                    title=row.title,
+                    author_id=row.author_id)

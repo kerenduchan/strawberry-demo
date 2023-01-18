@@ -13,6 +13,7 @@ class Author(Base):
     def __repr__(self):
         return f"{self.id}: name='{self.title}'"
 
+
 class Book(Base):
     __tablename__ = "books"
     id = Column(Integer, primary_key=True, autoincrement=True)

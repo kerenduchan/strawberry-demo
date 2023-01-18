@@ -2,7 +2,6 @@ import dataclasses
 from typing import TypeVar, Generic, List, Dict, Any
 import sqlalchemy
 from sqlalchemy.exc import IntegrityError
-import db.schema
 
 
 T = TypeVar("T")
