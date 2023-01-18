@@ -57,3 +57,9 @@ class Mutation:
         async with session_maker() as session:
             count = await db.utils.delete_book(session, int(book_id))
             return Count(count=count)
+
+    @strawberry.mutation
+    async def delete_author(self, author_id: strawberry.ID) -> Count:
+        async with session_maker() as session:
+            count = await db.utils.delete_author(session, int(author_id))
+            return Count(count=count)

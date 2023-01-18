@@ -94,6 +94,23 @@ async def delete_book(session, book_id: int) -> int:
     return res.rowcount
 
 
+async def delete_author(session, author_id: int) -> int:
+    # check if this author has any books
+    sql = sqlalchemy.select(db.schema.Book).\
+        where(db.schema.Book.author_id == author_id).limit(1)
+    res = await session.execute(sql)
+    has_books = res.first()
+
+    if has_books:
+        raise Exception('cannot delete an author that has books')
+
+    sql = sqlalchemy.delete(db.schema.Author).\
+        where(db.schema.Author.id == author_id)
+    res = await session.execute(sql)
+    await session.commit()
+    return res.rowcount
+
+
 def _append_where_clauses(sql, class_, filters):
     # This demo only supports filtering by string fields.
     if filters:
