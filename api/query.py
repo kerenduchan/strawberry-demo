@@ -5,7 +5,7 @@ from api.book import Book
 from api.pagination_window import PaginationWindow
 from db.session import session_maker
 import db.schema
-import db.ops
+import db.utils
 
 
 @strawberry.type
@@ -52,7 +52,7 @@ def _get_resolver(db_class: DbClass, api_class: ApiClass | Author):
             -> PaginationWindow[api_class]:
 
         async with session_maker() as session:
-            window = await db.ops.utils.get(
+            window = await db.utils.get(
                 session, db_class, order_by, limit, offset, filters)
 
             return PaginationWindow[api_class](

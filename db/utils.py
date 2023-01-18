@@ -1,10 +1,24 @@
 import dataclasses
-from typing import TypeVar, Generic, List, Dict
+from typing import TypeVar, Generic, List, Dict, Any
 import sqlalchemy
+from sqlalchemy.exc import IntegrityError
 import db.schema
 
 
 T = TypeVar("T")
+
+
+async def create(session, rec: T) -> T:
+    try:
+        session.add(rec)
+        await session.commit()
+        return rec
+    except IntegrityError as e:
+        msg = str(e.orig)
+        if "FOREIGN KEY" in str(e.orig):
+            # don't expose the db
+            msg = 'foreign key constraint failed.'
+        raise Exception(msg)
 
 
 @dataclasses.dataclass
@@ -47,16 +61,24 @@ async def get(
 
 
 async def update(session,
-                 class_: db.schema.Base,
+                 class_: T,
                  item_id: int,
-                 values: Dict):
+                 values: Dict[str, Any]):
+
+    if not values:
+        raise Exception('nothing to update')
 
     # update the db
     sql = sqlalchemy.update(class_).\
         where(class_.id == item_id).\
         values(**values)
-    await session.execute(sql)
-    await session.commit()
+
+    try:
+        await session.execute(sql)
+        await session.commit()
+    except IntegrityError as e:
+        if "FOREIGN KEY" in str(e.orig):
+            raise Exception(f'Foreign key constraint failed.')
 
     # return the updated record
     sql = sqlalchemy.select(class_).where(class_.id == item_id)
