@@ -2,13 +2,14 @@ import dataclasses
 from typing import TypeVar, Generic, List, Dict, Any
 import sqlalchemy
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import AsyncSession
 
 import db.schema
 
 T = TypeVar("T")
 
 
-async def create(session, rec: T) -> T:
+async def create(session: AsyncSession, rec: T) -> T:
     try:
         session.add(rec)
         await session.commit()
@@ -28,7 +29,7 @@ class PaginationWindow(Generic[T]):
 
 
 async def get(
-        session,
+        session: AsyncSession,
         class_: T,
         order_by: str,
         limit: int,
@@ -60,7 +61,7 @@ async def get(
     )
 
 
-async def update(session,
+async def update(session: AsyncSession,
                  class_: T,
                  item_id: int,
                  values: Dict[str, Any]):
@@ -86,7 +87,7 @@ async def update(session,
     return res.scalars().first()
 
 
-async def delete_book(session, book_id: int) -> int:
+async def delete_book(session: AsyncSession, book_id: int) -> int:
     sql = sqlalchemy.delete(db.schema.Book).\
         where(db.schema.Book.id == book_id)
     res = await session.execute(sql)
@@ -94,7 +95,7 @@ async def delete_book(session, book_id: int) -> int:
     return res.rowcount
 
 
-async def delete_author(session, author_id: int) -> int:
+async def delete_author(session: AsyncSession, author_id: int) -> int:
     # check if this author has any books
     sql = sqlalchemy.select(db.schema.Book).\
         where(db.schema.Book.author_id == author_id).limit(1)
