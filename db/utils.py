@@ -3,6 +3,7 @@ from typing import TypeVar, Generic, List, Dict, Any
 import sqlalchemy
 from sqlalchemy.exc import IntegrityError
 
+import db.schema
 
 T = TypeVar("T")
 
@@ -83,6 +84,14 @@ async def update(session,
     sql = sqlalchemy.select(class_).where(class_.id == item_id)
     res = await session.execute(sql)
     return res.scalars().first()
+
+
+async def delete_book(session, book_id: int) -> int:
+    sql = sqlalchemy.delete(db.schema.Book).\
+        where(db.schema.Book.id == book_id)
+    res = await session.execute(sql)
+    await session.commit()
+    return res.rowcount
 
 
 def _append_where_clauses(sql, class_, filters):

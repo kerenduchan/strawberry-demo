@@ -1,9 +1,10 @@
 import strawberry
 from api.book import Book
 from api.author import Author
+from api.misc import Count
 from db.session import session_maker
 import db.schema
-from db.utils import create, update
+import db.utils
 
 @strawberry.type
 class Mutation:
@@ -12,7 +13,7 @@ class Mutation:
     async def create_author(self, name: str) -> Author:
         rec = db.schema.Author(name=name)
         async with session_maker() as session:
-            await create(session, rec)
+            await db.utils.create(session, rec)
             return Author.from_db(rec)
 
     @strawberry.mutation
@@ -22,7 +23,7 @@ class Mutation:
         values = {'name': name}
 
         async with session_maker() as session:
-            rec = await update(
+            rec = await db.utils.update(
                 session, db.schema.Author, int(author_id), values)
             return Author.from_db(rec)
 
@@ -32,7 +33,7 @@ class Mutation:
                           author_id: strawberry.ID) -> Book:
         rec = db.schema.Book(title=title, author_id=author_id)
         async with session_maker() as session:
-            await create(session, rec)
+            await db.utils.create(session, rec)
             return Book.from_db(rec)
 
     @strawberry.mutation
@@ -47,6 +48,12 @@ class Mutation:
             values['author_id'] = author_id
 
         async with session_maker() as session:
-            rec = await update(
+            rec = await db.utils.update(
                 session, db.schema.Book, int(book_id), values)
             return Book.from_db(rec)
+
+    @strawberry.mutation
+    async def delete_book(self, book_id: strawberry.ID) -> Count:
+        async with session_maker() as session:
+            count = await db.utils.delete_book(session, int(book_id))
+            return Count(count=count)
