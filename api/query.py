@@ -1,3 +1,4 @@
+from typing import Dict, TypeVar
 import strawberry
 from api.author import Author
 from api.book import Book
@@ -20,13 +21,8 @@ class Query:
         if title:
             filters['title'] = title
 
-        async with session_maker() as session:
-            window = await db.ops.utils.get(
-                session, db.schema.Book, order_by, limit, offset, filters)
-
-            return PaginationWindow[Book](
-                items=[Book.from_db(item) for item in window.items],
-                total_items_count=window.total_items_count)
+        resolve = _get_resolver(db.schema.Book, Book)
+        return await resolve(order_by, limit, offset, filters)
 
     @strawberry.field
     async def authors(self,
@@ -35,13 +31,32 @@ class Query:
                       offset: int = 0,
                       name: str | None = None) -> PaginationWindow[Author]:
         filters = {}
+
         if name:
             filters['name'] = name
 
+        resolve = _get_resolver(db.schema.Author, Author)
+        return await resolve(order_by, limit, offset, filters)
+
+
+DbClass = TypeVar("DbClass")
+ApiClass = TypeVar("ApiClass")
+
+
+def _get_resolver(db_class: DbClass, api_class: ApiClass | Author):
+
+    async def resolve(order_by: str,
+                      limit: int = 100,
+                      offset: int = 0,
+                      filters: Dict[str, str] | None = None) \
+            -> PaginationWindow[api_class]:
+
         async with session_maker() as session:
             window = await db.ops.utils.get(
-                session, db.schema.Author, order_by, limit, offset, filters)
+                session, db_class, order_by, limit, offset, filters)
 
-            return PaginationWindow[Author](
-                items=[Author.from_db(item) for item in window.items],
+            return PaginationWindow[api_class](
+                items=[api_class.from_db(item) for item in window.items],
                 total_items_count=window.total_items_count)
+
+    return resolve
