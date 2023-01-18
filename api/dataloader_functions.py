@@ -1,4 +1,4 @@
-from typing import List, Dict, Any, TypeVar
+from typing import List, Dict, TypeVar
 from strawberry.dataloader import DataLoader
 import db.schema
 from db.session import session_maker
