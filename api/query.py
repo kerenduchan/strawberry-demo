@@ -1,10 +1,10 @@
-from typing import List
 import strawberry
-from api.book import Book
 from api.author import Author
+from api.book import Book
 from api.pagination_window import PaginationWindow
 from db.session import session_maker
-import db.ops.book
+import db.schema
+import db.ops
 
 
 @strawberry.type
@@ -21,15 +21,16 @@ class Query:
             filters['title'] = title
 
         async with session_maker() as session:
-            window = await db.ops.book.get(
-                session, limit, offset, order_by, filters)
-            return PaginationWindow(
+            window = await db.ops.utils.get(
+                session, db.schema.Book, order_by, limit, offset, filters)
+
+            return PaginationWindow[Book](
                 items=[Book.from_db(item) for item in window.items],
                 total_items_count=window.total_items_count)
 
     @strawberry.field
     async def authors(self,
-                      order_by: str | None = "title",
+                      order_by: str | None = "name",
                       limit: int = 100,
                       offset: int = 0,
                       name: str | None = None) -> PaginationWindow[Author]:
@@ -38,8 +39,9 @@ class Query:
             filters['name'] = name
 
         async with session_maker() as session:
-            window = await db.ops.author.get(
-                session, limit, offset, order_by, filters)
-            return PaginationWindow(
+            window = await db.ops.utils.get(
+                session, db.schema.Author, order_by, limit, offset, filters)
+
+            return PaginationWindow[Author](
                 items=[Author.from_db(item) for item in window.items],
                 total_items_count=window.total_items_count)

@@ -18,10 +18,11 @@ class Mutation:
         return Author.from_db(rec)
 
     @strawberry.mutation
-    async def update_author(self, name: str) -> Author:
+    async def update_author(self, author_id: strawberry.ID, name: str) -> Author:
         async with session_maker() as session:
-            rec = await db.ops.author.create(
+            rec = await db.ops.author.update(
                 session=session,
+                author_id=int(author_id),
                 name=name)
         return Author.from_db(rec)
 
@@ -31,6 +32,6 @@ class Mutation:
             rec = await db.ops.book.create(
                 session=session,
                 title=title,
-                author_id=author_id)
-        return Book.from_db(rec)
+                author_id=int(author_id))
+            return Book.from_db(rec)
 

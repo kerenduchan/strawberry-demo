@@ -1,15 +1,14 @@
 from db.schema import Author
-from db.ops.pagination_window import PaginationWindow, get_pagination_window
+import db.ops.utils
 
 
-async def get(session, limit, offset, order_by, filters) \
-        -> PaginationWindow:
-    return await get_pagination_window(
-        session, 'Author', order_by, limit, offset, filters)
-
-
-async def create(session, name) -> Author:
+async def create(session, name: str) -> Author:
     rec = Author(name=name)
     session.add(rec)
     await session.commit()
     return rec
+
+
+async def update(session, author_id: int, name: str) -> Author:
+    values = {'name': name}
+    return await db.ops.utils.update(session, Author, author_id, values)
