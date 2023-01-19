@@ -3,7 +3,8 @@ from typing import TypeVar, Generic, List, Dict, Any
 import sqlalchemy
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from db.utils.i_db_filter import IDbFilter
+from db.ops.pagination_window import PaginationWindow
 T = TypeVar("T")
 
 
@@ -20,19 +21,13 @@ async def create(session: AsyncSession, rec: T) -> T:
         raise Exception(msg)
 
 
-@dataclasses.dataclass
-class PaginationWindow(Generic[T]):
-    total_items_count: int
-    items: List[T]
-
-
 async def get(
         session: AsyncSession,
         class_: T,
         order_by: str,
-        limit: int,
-        offset: int = 0,
-        filters: Dict[str, str] | None = None) -> PaginationWindow:
+        db_filter: IDbFilter | None,
+        limit: int | None = None,
+        offset: int = 0) -> PaginationWindow:
     """
     Get one pagination window on the given db class for the given limit
     and offset, ordered by the given attribute and filtered using the
@@ -43,13 +38,16 @@ async def get(
 
     # get the items in the pagination window
     sql = sqlalchemy.select(class_).order_by(order_by_column).limit(limit).offset(offset)
-    sql = _append_where_clauses(sql, class_, filters)
+
+    if db_filter:
+        sql = db_filter.apply(sql)
     res = await session.execute(sql)
     items = res.scalars().all()
 
     # get the total items count
     sql = sqlalchemy.select([sqlalchemy.func.count()]).select_from(class_)
-    sql = _append_where_clauses(sql, class_, filters)
+    if db_filter:
+        sql = db_filter.apply(sql)
     res = await session.execute(sql)
     total_items_count = res.scalar()
 

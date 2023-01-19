@@ -1,7 +1,21 @@
 import sqlalchemy
 from sqlalchemy.ext.asyncio import AsyncSession
 from db.schema import Author, Book
+from db.ops.pagination_window import PaginationWindow
 import db.ops.utils
+from db.utils.authors_filter import AuthorsFilter
+
+
+async def get_authors(
+        session: AsyncSession,
+        order_by: str | None = "name",
+        has_books: bool | None = None,
+        limit: int = 100,
+        offset: int = 0) -> PaginationWindow[Author]:
+
+    db_filter = AuthorsFilter(has_books)
+    return await db.ops.utils.get(
+        session, Author, order_by, db_filter, limit, offset)
 
 
 async def create_author(
