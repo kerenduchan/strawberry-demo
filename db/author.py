@@ -1,6 +1,7 @@
 import sqlalchemy
 from db.schema import Author, Book
 from sqlalchemy.ext.asyncio import AsyncSession
+import db.utils
 
 
 async def delete_author(session: AsyncSession, author_id: int) -> int:
@@ -13,8 +14,4 @@ async def delete_author(session: AsyncSession, author_id: int) -> int:
     if has_books:
         raise Exception('cannot delete an author that has books')
 
-    sql = sqlalchemy.delete(Author).\
-        where(Author.id == author_id)
-    res = await session.execute(sql)
-    await session.commit()
-    return res.rowcount
+    return await db.utils.delete(session, Author, author_id)

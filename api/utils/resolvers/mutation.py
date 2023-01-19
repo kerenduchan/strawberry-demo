@@ -53,7 +53,7 @@ async def update_book(
 
 async def delete_book(book_id: strawberry.ID) -> Count:
     async with session_maker() as session:
-        count = await db.utils.delete_book(session, int(book_id))
+        count = await db.utils.delete(session, db.schema.Book, int(book_id))
         return Count(count=count)
 
 

@@ -90,9 +90,9 @@ async def update(session: AsyncSession,
     return rec
 
 
-async def delete_book(session: AsyncSession, book_id: int) -> int:
-    sql = sqlalchemy.delete(db.schema.Book).\
-        where(db.schema.Book.id == book_id)
+async def delete(session: AsyncSession, class_: T, id_: int) -> int:
+    sql = sqlalchemy.delete(class_).\
+        where(class_.id == id_)
     res = await session.execute(sql)
     await session.commit()
     return res.rowcount
