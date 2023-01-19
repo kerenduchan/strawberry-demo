@@ -1,19 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from db.schema import Book
 import db.utils
-from db.pagination_window import PaginationWindow
-from db.books_filter import BooksFilter
-
-
-async def get_books(
-        session: AsyncSession,
-        order_by: str | None = "title",
-        db_filter: BooksFilter | None = None,
-        limit: int = 100,
-        offset: int = 0) -> PaginationWindow[Book]:
-
-    return await db.utils.get(
-        session, Book, order_by, db_filter, limit, offset)
 
 
 async def create_book(
