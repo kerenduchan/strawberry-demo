@@ -2,7 +2,7 @@ import strawberry
 import db.authors_filter
 
 
-@strawberry.input(description="A single author.")
+@strawberry.input(description="Filter criteria for authors.")
 class AuthorsFilter:
     has_books: bool | None = None
     name: str | None = None

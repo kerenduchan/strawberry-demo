@@ -3,21 +3,26 @@ from api.pagination_window import PaginationWindow
 from api.book import Book
 from api.author import Author
 from api.authors_filter import AuthorsFilter
+from api.books_filter import BooksFilter
 import db.schema
 import db.utils
 import db.book
 import db.author
 
+DEFAULT_LIMIT = 100
 
 async def books(
         order_by: str | None = "title",
-        limit: int = 100,
+        filter: BooksFilter | None = None,
+        limit: int = DEFAULT_LIMIT,
         offset: int = 0,
         title: str | None = None) -> PaginationWindow[Book]:
 
+    db_filter = None if filter is None else filter.to_db_filter()
+
     async with session_maker() as session:
         window = await db.book.get_books(
-            session, order_by, title, limit, offset)
+            session, order_by, db_filter, limit, offset)
 
         return PaginationWindow[Book](
             items=[Book.from_db(item) for item in window.items],
@@ -27,7 +32,7 @@ async def books(
 async def authors(
         order_by: str | None = "name",
         filter: AuthorsFilter | None = None,
-        limit: int = 100,
+        limit: int = DEFAULT_LIMIT,
         offset: int = 0) -> PaginationWindow[Author]:
 
     db_filter = None if filter is None else filter.to_db_filter()

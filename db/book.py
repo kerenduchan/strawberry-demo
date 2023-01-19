@@ -7,12 +7,11 @@ from db.books_filter import BooksFilter
 
 async def get_books(
         session: AsyncSession,
-        order_by: str | None = "name",
-        title: str | None = None,
+        order_by: str | None = "title",
+        db_filter: BooksFilter | None = None,
         limit: int = 100,
         offset: int = 0) -> PaginationWindow[Book]:
 
-    db_filter = BooksFilter(title)
     return await db.utils.get(
         session, Book, order_by, db_filter, limit, offset)
 
