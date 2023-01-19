@@ -5,6 +5,7 @@ from api.count import Count
 from db.session import session_maker
 import db.schema
 import db.utils
+import db.author
 
 
 async def create_author(name: str) -> Author:
@@ -58,5 +59,5 @@ async def delete_book(book_id: strawberry.ID) -> Count:
 
 async def delete_author(author_id: strawberry.ID) -> Count:
     async with session_maker() as session:
-        count = await db.utils.delete_author(session, int(author_id))
+        count = await db.author.delete_author(session, int(author_id))
         return Count(count=count)
