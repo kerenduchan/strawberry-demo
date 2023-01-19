@@ -1,5 +1,5 @@
 from sqlalchemy.orm import declarative_base
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, Float, String, ForeignKey
 
 
 Base = declarative_base()
@@ -19,6 +19,7 @@ class Book(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(String, unique=True, nullable=False)
     author_id = Column(Integer, ForeignKey(Author.id), nullable=False)
+    price = Column(Float, nullable=False)
 
     def __repr__(self):
         return f"{self.id}: title='{self.title}' author_id={self.author_id}"

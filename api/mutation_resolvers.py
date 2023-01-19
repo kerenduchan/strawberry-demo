@@ -30,9 +30,10 @@ async def delete_author(author_id: strawberry.ID) -> Count:
 
 async def create_book(
         title: str,
+        price: float,
         author_id: strawberry.ID) -> Book:
     async with session_maker() as session:
-        rec = await db.book.create_book(session, title, int(author_id))
+        rec = await db.book.create_book(session, title, price, int(author_id))
         return Book.from_db(rec)
 
 

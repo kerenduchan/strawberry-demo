@@ -6,8 +6,9 @@ import db.utils
 async def create_book(
         session: AsyncSession,
         title: str,
+        price: float,
         author_id: int) -> Book:
-    rec = Book(title=title, author_id=author_id)
+    rec = Book(title=title, price=price, author_id=author_id)
     return await db.utils.create(session, rec)
 
 

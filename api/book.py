@@ -19,6 +19,10 @@ class Book:
     author_id: strawberry.ID = strawberry.field(
         description="The ID of the author of this book.")
 
+    price: float = strawberry.field(
+        description="The price of this book"
+    )
+
     @strawberry.field()
     async def author(self, info) -> Annotated["Author", strawberry.lazy("api.author")]:
         rec = await info.context.dataloaders['author_by_id'].load(int(self.author_id))
@@ -28,4 +32,5 @@ class Book:
     def from_db(row: db.schema.Book) -> "Book":
         return Book(id=row.id,
                     title=row.title,
+                    price=row.price,
                     author_id=row.author_id)
