@@ -24,11 +24,11 @@ async def books(
 
 async def authors(
         order_by: str | None = "name",
-        where: AuthorsFilter | None = None,
+        filter: AuthorsFilter | None = None,
         limit: int = 100,
         offset: int = 0) -> PaginationWindow[Author]:
 
-    db_filter = None if where is None else where.to_db_filter()
+    db_filter = None if filter is None else filter.to_db_filter()
 
     async with session_maker() as session:
         window = await db.ops.author.get_authors(
