@@ -4,7 +4,7 @@ from api.pagination_window import PaginationWindow
 from api.book import Book
 from api.author import Author
 import db.schema
-import db.utils
+import db.ops.utils
 
 
 async def books(
@@ -47,7 +47,7 @@ def _get_resolver(db_class: DbClass, api_class: ApiClass | Author):
             -> PaginationWindow[api_class]:
 
         async with session_maker() as session:
-            window = await db.utils.get(
+            window = await db.ops.utils.get(
                 session, db_class, order_by, limit, offset, filters)
 
             return PaginationWindow[api_class](
