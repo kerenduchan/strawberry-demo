@@ -1,5 +1,5 @@
 from strawberry.fastapi import BaseContext
-from api.utils.dataloaders import get_all_dataloaders
+from api.dataloaders import get_all_dataloaders
 
 
 class Context(BaseContext):

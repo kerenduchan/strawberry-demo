@@ -4,7 +4,7 @@ from strawberry.schema import Schema
 from strawberry.fastapi import GraphQLRouter
 from api.query import Query
 from api.mutation import Mutation
-from api.utils.context import Context
+from api.context import Context
 
 
 def get_context():
