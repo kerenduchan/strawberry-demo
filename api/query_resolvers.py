@@ -5,6 +5,8 @@ from api.author import Author
 from api.authors_filter import AuthorsFilter
 import db.schema
 import db.utils
+import db.book
+import db.author
 
 
 async def books(

@@ -15,4 +15,3 @@ class Query:
     authors: PaginationWindow[Author] = strawberry.field(
         resolver=api.query_resolvers.authors,
         description="get authors")
-
