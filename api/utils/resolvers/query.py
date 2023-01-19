@@ -25,13 +25,13 @@ async def authors(
         limit: int = 100,
         offset: int = 0,
         name: str | None = None) -> PaginationWindow[Author]:
-        filters = {}
+    filters = {}
 
-        if name:
-            filters['name'] = name
+    if name:
+        filters['name'] = name
 
-        resolve = _get_resolver(db.schema.Author, Author)
-        return await resolve(order_by, limit, offset, filters)
+    resolve = _get_resolver(db.schema.Author, Author)
+    return await resolve(order_by, limit, offset, filters)
 
 
 DbClass = TypeVar("DbClass")
