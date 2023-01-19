@@ -1,13 +1,14 @@
+import sqlalchemy
 from db.i_db_filter import IDbFilter
 from db.schema import Author, Book
-import sqlalchemy
+from db.filters.string_filter import StringFilter
 
 
 class AuthorsFilter(IDbFilter):
     has_books: bool | None
-    name: str | None
+    name: StringFilter | None
 
-    def __init__(self, has_books: bool | None, name: str | None):
+    def __init__(self, has_books: bool | None, name: StringFilter | None):
         self.has_books = has_books
         self.name = name
 
@@ -19,9 +20,6 @@ class AuthorsFilter(IDbFilter):
                 sql = sql.where(Author.id.notin_(sqlalchemy.select(Book.author_id).distinct()))
 
         if self.name is not None:
-            sql = sql.where(Author.name.contains(self.name))
+            sql = self.name.apply(sql)
 
         return sql
-
-
-
