@@ -1,46 +1,32 @@
-from db.session import session_maker
+from typing import TypeVar
 from api.pagination_window import PaginationWindow
-from api.book import Book
-from api.author import Author
-from api.authors_filter import AuthorsFilter
-from api.books_filter import BooksFilter
-import db.schema
+from db.session import session_maker
 import db.utils
-import db.book
-import db.author
 
 DEFAULT_LIMIT = 100
-
-async def books(
-        order_by: str | None = "title",
-        filter: BooksFilter | None = None,
-        limit: int = DEFAULT_LIMIT,
-        offset: int = 0,
-        title: str | None = None) -> PaginationWindow[Book]:
-
-    db_filter = None if filter is None else filter.to_db_filter()
-
-    async with session_maker() as session:
-        window = await db.book.get_books(
-            session, order_by, db_filter, limit, offset)
-
-        return PaginationWindow[Book](
-            items=[Book.from_db(item) for item in window.items],
-            total_items_count=window.total_items_count)
+ApiClass = TypeVar("ApiClass")
 
 
-async def authors(
-        order_by: str | None = "name",
-        filter: AuthorsFilter | None = None,
-        limit: int = DEFAULT_LIMIT,
-        offset: int = 0) -> PaginationWindow[Author]:
+def get_resolver_fn(
+        api_class: ApiClass,
+        filter_class: type,
+        db_class: type,
+        default_order_by: str):
 
-    db_filter = None if filter is None else filter.to_db_filter()
+    async def resolve(
+            order_by: str | None = default_order_by,
+            filter: filter_class | None = None,
+            limit: int = DEFAULT_LIMIT,
+            offset: int = 0) -> PaginationWindow[api_class]:
 
-    async with session_maker() as session:
-        window = await db.author.get_authors(
-            session, order_by, db_filter, limit, offset)
+        db_filter = None if filter is None else filter.to_db_filter()
 
-        return PaginationWindow[Author](
-            items=[Author.from_db(item) for item in window.items],
-            total_items_count=window.total_items_count)
+        async with session_maker() as session:
+            window = await db.utils.get(
+                session, db_class, order_by, db_filter, limit, offset)
+
+            return PaginationWindow[api_class](
+                items=[api_class.from_db(item) for item in window.items],
+                total_items_count=window.total_items_count)
+
+    return resolve
