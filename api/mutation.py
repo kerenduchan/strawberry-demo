@@ -2,65 +2,32 @@ import strawberry
 from api.book import Book
 from api.author import Author
 from api.count import Count
-from db.session import session_maker
-import db.schema
-import db.utils
+import api.resolvers.mutation
 
 
 @strawberry.type
 class Mutation:
 
-    @strawberry.mutation
-    async def create_author(self, name: str) -> Author:
-        rec = db.schema.Author(name=name)
-        async with session_maker() as session:
-            await db.utils.create(session, rec)
-            return Author.from_db(rec)
+    create_author: Author = strawberry.mutation(
+        resolver=api.resolvers.mutation.create_author,
+        description="create an author")
 
-    @strawberry.mutation
-    async def update_author(self,
-                            author_id: strawberry.ID,
-                            name: str) -> Author:
-        values = {'name': name}
+    update_author: Author = strawberry.mutation(
+        resolver=api.resolvers.mutation.update_author,
+        description="update an author")
 
-        async with session_maker() as session:
-            rec = await db.utils.update(
-                session, db.schema.Author, int(author_id), values)
-            return Author.from_db(rec)
+    delete_author: Count = strawberry.mutation(
+        resolver=api.resolvers.mutation.delete_author,
+        description="delete an author")
 
-    @strawberry.mutation
-    async def create_book(self,
-                          title: str,
-                          author_id: strawberry.ID) -> Book:
-        rec = db.schema.Book(title=title, author_id=author_id)
-        async with session_maker() as session:
-            await db.utils.create(session, rec)
-            return Book.from_db(rec)
+    create_book: Book = strawberry.mutation(
+        resolver=api.resolvers.mutation.create_book,
+        description="create a book")
 
-    @strawberry.mutation
-    async def update_book(self,
-                          book_id: strawberry.ID,
-                          title: str | None = None,
-                          author_id: int | None = None) -> Book:
-        values = {}
-        if title is not None:
-            values['title'] = title
-        if author_id is not None:
-            values['author_id'] = author_id
+    update_book: Book = strawberry.mutation(
+        resolver=api.resolvers.mutation.update_book,
+        description="update a book")
 
-        async with session_maker() as session:
-            rec = await db.utils.update(
-                session, db.schema.Book, int(book_id), values)
-            return Book.from_db(rec)
-
-    @strawberry.mutation
-    async def delete_book(self, book_id: strawberry.ID) -> Count:
-        async with session_maker() as session:
-            count = await db.utils.delete_book(session, int(book_id))
-            return Count(count=count)
-
-    @strawberry.mutation
-    async def delete_author(self, author_id: strawberry.ID) -> Count:
-        async with session_maker() as session:
-            count = await db.utils.delete_author(session, int(author_id))
-            return Count(count=count)
+    delete_book: Count = strawberry.mutation(
+        resolver=api.resolvers.mutation.delete_book,
+        description="delete a book")
