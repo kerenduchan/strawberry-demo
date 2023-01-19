@@ -3,7 +3,6 @@ from typing import TypeVar, Generic, List, Dict, Any
 import sqlalchemy
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-import db.schema
 
 T = TypeVar("T")
 
