@@ -83,7 +83,11 @@ async def update(session: AsyncSession,
     # return the updated record
     sql = sqlalchemy.select(class_).where(class_.id == item_id)
     res = await session.execute(sql)
-    return res.scalars().first()
+    rec = res.scalars().first()
+
+    if rec is None:
+        raise Exception(f'not found')
+    return rec
 
 
 async def delete_book(session: AsyncSession, book_id: int) -> int:
