@@ -6,6 +6,7 @@ from db.session import session_maker
 import db.schema
 import db.utils
 import db.author
+import db.book
 
 
 async def create_author(name: str) -> Author:
@@ -26,6 +27,12 @@ async def update_author(
         return Author.from_db(rec)
 
 
+async def delete_author(author_id: strawberry.ID) -> Count:
+    async with session_maker() as session:
+        count = await db.author.delete_author(session, int(author_id))
+        return Count(count=count)
+
+
 async def create_book(
         title: str,
         author_id: strawberry.ID) -> Book:
@@ -39,25 +46,13 @@ async def update_book(
         book_id: strawberry.ID,
         title: str | None = None,
         author_id: int | None = None) -> Book:
-    values = {}
-    if title is not None:
-        values['title'] = title
-    if author_id is not None:
-        values['author_id'] = author_id
 
     async with session_maker() as session:
-        rec = await db.utils.update(
-            session, db.schema.Book, int(book_id), values)
+        rec = await db.book.update_book(session, int(book_id), title, author_id)
         return Book.from_db(rec)
 
 
 async def delete_book(book_id: strawberry.ID) -> Count:
     async with session_maker() as session:
         count = await db.utils.delete(session, db.schema.Book, int(book_id))
-        return Count(count=count)
-
-
-async def delete_author(author_id: strawberry.ID) -> Count:
-    async with session_maker() as session:
-        count = await db.author.delete_author(session, int(author_id))
         return Count(count=count)
