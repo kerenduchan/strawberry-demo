@@ -1,9 +1,9 @@
 import sqlalchemy
 from sqlalchemy.ext.asyncio import AsyncSession
 from db.schema import Author, Book
-from db.ops.pagination_window import PaginationWindow
-import db.ops.utils
-from db.utils.authors_filter import AuthorsFilter
+from db.pagination_window import PaginationWindow
+import db.utils
+from db.authors_filter import AuthorsFilter
 
 
 async def get_authors(
@@ -13,7 +13,7 @@ async def get_authors(
         limit: int = 100,
         offset: int = 0) -> PaginationWindow[Author]:
 
-    return await db.ops.utils.get(
+    return await db.utils.get(
         session, Author, order_by, db_filter, limit, offset)
 
 
@@ -21,7 +21,7 @@ async def create_author(
         session: AsyncSession,
         name: str) -> Author:
     rec = db.schema.Author(name=name)
-    return await db.ops.utils.create(session, rec)
+    return await db.utils.create(session, rec)
 
 
 async def update_author(
@@ -29,7 +29,7 @@ async def update_author(
         author_id: int,
         name: str) -> Author:
     values = {'name': name}
-    return await db.ops.utils.update(
+    return await db.utils.update(
         session, db.schema.Author, int(author_id), values)
 
 
@@ -45,4 +45,4 @@ async def delete_author(
     if has_books:
         raise Exception('cannot delete an author that has books')
 
-    return await db.ops.utils.delete(session, Author, author_id)
+    return await db.utils.delete(session, Author, author_id)

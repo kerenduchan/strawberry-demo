@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from db.schema import Book
-import db.ops.utils
-from db.ops.pagination_window import PaginationWindow
-from db.utils.books_filter import BooksFilter
+import db.utils
+from db.pagination_window import PaginationWindow
+from db.books_filter import BooksFilter
 
 
 async def get_books(
@@ -13,7 +13,7 @@ async def get_books(
         offset: int = 0) -> PaginationWindow[Book]:
 
     db_filter = BooksFilter(title)
-    return await db.ops.utils.get(
+    return await db.utils.get(
         session, Book, order_by, db_filter, limit, offset)
 
 
@@ -22,7 +22,7 @@ async def create_book(
         title: str,
         author_id: int) -> Book:
     rec = Book(title=title, author_id=author_id)
-    return await db.ops.utils.create(session, rec)
+    return await db.utils.create(session, rec)
 
 
 async def update_book(
@@ -36,11 +36,11 @@ async def update_book(
     if author_id is not None:
         values['author_id'] = author_id
 
-    return await db.ops.utils.update(
+    return await db.utils.update(
         session, Book, int(book_id), values)
 
 
 async def delete_book(
         session: AsyncSession,
         book_id: int) -> int:
-    return await db.ops.utils.delete(session, Book, book_id)
+    return await db.utils.delete(session, Book, book_id)

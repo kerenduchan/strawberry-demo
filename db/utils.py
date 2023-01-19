@@ -1,10 +1,9 @@
-import dataclasses
-from typing import TypeVar, Generic, List, Dict, Any
+from typing import TypeVar, Dict, Any
 import sqlalchemy
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-from db.utils.i_db_filter import IDbFilter
-from db.ops.pagination_window import PaginationWindow
+from db.i_db_filter import IDbFilter
+from db.pagination_window import PaginationWindow
 T = TypeVar("T")
 
 

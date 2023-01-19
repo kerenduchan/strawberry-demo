@@ -1,4 +1,4 @@
-from db.utils.i_db_filter import IDbFilter
+from db.i_db_filter import IDbFilter
 from db.schema import Book
 
 
