@@ -1,4 +1,5 @@
 import strawberry
+from api.filters.util import get_operator
 import db.filters.string_filter
 
 
@@ -10,21 +11,9 @@ class StringFilter:
     ends_with:  str | None = None
 
     def to_db_filter(self, column) -> db.filters.string_filter.StringFilter:
-
-        all_ops = {
-            'contains': self.contains,
-            'exactly': self.exactly,
-            'starts_with': self.starts_with,
-            'ends_with': self.ends_with,
-        }
-        ops = [(op, val) for op, val in all_ops.items() if val is not None]
-
-        if len(ops) != 1:
-            raise Exception('exactly one operator must be specified')
-
-        (op, value) = ops[0]
+        op = get_operator(self)
 
         return db.filters.string_filter.StringFilter(
             column=column,
-            op=op,
-            value=value)
+            op=op.name,
+            value=op.value)

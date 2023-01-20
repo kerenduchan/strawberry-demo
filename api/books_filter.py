@@ -8,7 +8,7 @@ import db.schema
 @strawberry.input(description="Filter criteria for books.")
 class BooksFilter:
     title: StringFilter | None = None
-    price: NumberFilter | None = None
+    price: NumberFilter[float] | None = None
 
     def to_db_filter(self) -> db.books_filter.BooksFilter:
         return db.books_filter.BooksFilter(

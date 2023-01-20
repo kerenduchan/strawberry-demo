@@ -1,34 +1,24 @@
+from typing import TypeVar, Generic
 import strawberry
+from api.filters.util import get_operator
 import db.filters.number_filter
+
+NumberType = TypeVar("NumberType")
 
 
 @strawberry.input(description="Filter criteria for number fields.")
-class NumberFilter:
-    lt:  float | None = None
-    lte: float | None = None
-    gt:  float | None = None
-    gte: float | None = None
-    eq:  float | None = None
-    ne:  float | None = None
+class NumberFilter(Generic[NumberType]):
+    lt:  NumberType | None = None
+    lte: NumberType | None = None
+    gt:  NumberType | None = None
+    gte: NumberType | None = None
+    eq:  NumberType | None = None
+    ne:  NumberType | None = None
 
     def to_db_filter(self, column) -> db.filters.number_filter.NumberFilter:
-
-        all_ops = {
-            '<': self.lt,
-            '<=': self.lte,
-            '>': self.gt,
-            '>=': self.gte,
-            '==': self.eq,
-            '!=': self.ne}
-
-        ops = [(op, val) for op, val in all_ops.items() if val is not None]
-
-        if len(ops) != 1:
-            raise Exception('exactly one operator must be specified')
-
-        (op, value) = ops[0]
+        op = get_operator(self)
 
         return db.filters.number_filter.NumberFilter(
             column=column,
-            op=op,
-            value=value)
+            op=op.name,
+            value=op.value)
