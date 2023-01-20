@@ -10,14 +10,19 @@ It features the following:
 - **Dataloaders** for getting the author of a book and getting the books of an author.
 - **FastAPI**
 
-# Installation
+# Install
 ```
 python -m venv virtualenv
 source virtualenv/bin/activate
 pip install -r requirements.txt
 ```
 
-# Starting the Server
+# Initialize the database
+```
+python init_db.py
+```
+
+# Start the Server
 ```
 uvicorn app:app --reload
 ```
