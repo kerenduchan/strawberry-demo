@@ -105,7 +105,7 @@ mutation createAuthor {
 }
 ```
 
-Create a book for the author whose id is "8c5db983-b824-4120-b07b-179f97575b77" 
+Create a book for the author whose id is `"8c5db983-b824-4120-b07b-179f97575b77"`
 (replace this with a real author ID from your database), with a price of 7.95:
 ```graphql
 mutation createBook {
