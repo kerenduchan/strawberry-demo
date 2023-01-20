@@ -1,8 +1,10 @@
 # strawberry-demo
 
 This is a demo project showing how to set up a [Strawberry GraphQL](https://strawberry.rocks/) server (Python).
+
 It features the following:
-- sqlite database, accessed through [SQLAlchemy](https://www.sqlalchemy.org/) async.
+- An [SQLite](https://www.sqlite.org/index.html) database, accessed through [SQLAlchemy](https://www.sqlalchemy.org/) 
+  (async)
 - A db schema with two tables: books and authors
 - Strawberry fields (author and book) with a [circular dependency](https://strawberry.rocks/docs/types/lazy)
   between them (book has author, author has books)
@@ -12,9 +14,9 @@ It features the following:
   - sorting
   - filtering
 - GraphQL [mutations](https://strawberry.rocks/docs/general/mutations) using Strawberry to create/update/delete 
-  a book/author.
+  a book/author
 - [Dataloaders](https://strawberry.rocks/docs/guides/dataloaders#dataloaders) for getting the author of a book and 
-  getting the books of an author.
+  getting the books of an author
 - FastAPI
 
 # Install
