@@ -17,11 +17,10 @@ async def update_book(
         book_id: str,
         title: str | None,
         author_id: str | None) -> Book:
-    values = {}
-    if title is not None:
-        values['title'] = title
-    if author_id is not None:
-        values['author_id'] = author_id
+    values = {
+        'title': title,
+        'author_id': author_id
+    }
 
     return await db.utils.update(
         session, Book, book_id, values)

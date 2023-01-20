@@ -61,6 +61,8 @@ async def update(session: AsyncSession,
                  item_id: str,
                  values: Dict[str, Any]):
 
+    values = {k: v for k, v in values.items() if v is not None}
+
     if not values:
         raise Exception('nothing to update')
 
