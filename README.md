@@ -4,14 +4,17 @@ This is a demo project showing how to set up a **[Strawberry](https://strawberry
 It features the following:
 - sqlite database, accessed through **[SQLAlchemy](https://www.sqlalchemy.org/) async**.
 - A db schema with two tables: books and authors
-- Strawberry fields (author and book) with a **cyclic dependency** between them (book has author, author has books)
-- **GraphQL queries** using Strawberry to get books/authors with:
+- Strawberry fields (author and book) with a **[circular dependency](https://strawberry.rocks/docs/types/lazy)** 
+  between them (book has author, author has books)
+- **GraphQL [queries](https://strawberry.rocks/docs/general/queries)** using Strawberry to get books/authors with:
   - **pagination** 
     ([offset-based](https://strawberry.rocks/docs/guides/pagination/offset-based#implementing-offset-pagination))
   - **sorting**
   - **filtering**
-- **GraphQL mutations** using Strawberry to create/update/delete a book/author.
-- **Dataloaders** for getting the author of a book and getting the books of an author.
+- **GraphQL [mutations](https://strawberry.rocks/docs/general/mutations)** using Strawberry to create/update/delete 
+  a book/author.
+- **[Dataloaders](https://strawberry.rocks/docs/guides/dataloaders#dataloaders)** for getting the author of a book and 
+  getting the books of an author.
 - **FastAPI**
 
 # Install
