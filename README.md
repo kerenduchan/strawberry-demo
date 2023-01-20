@@ -26,7 +26,7 @@ python init_db.py
 ```
 uvicorn app:app --reload
 ```
-Then browse to http://127.0.0.1:8000/graphql.
+Then browse to http://127.0.0.1:8000/graphql
 
 # Sample Queries
 
@@ -52,7 +52,7 @@ query books {
 Get the first 3 books whose price is greater than 4.3:
 ```graphql
 query books {
-  books(filter: { price: { gte: 4.44}}, limit: 3, orderBy: "price") {
+  books(filter: {price: {gt: 4.3}}, limit: 3, orderBy: "price") {
     items {
       id
       title
@@ -71,7 +71,7 @@ query books {
 Get all authors (limited to the first 100) whose name starts with "Jo":
 ```graphql
 query authors {
-  authors(filter: { name: { startsWith: "Jo" }}) {
+  authors(filter: {name: {startsWith: "Jo"}}) {
     items {
       id
       name
@@ -96,10 +96,15 @@ mutation createAuthor {
 }
 ```
 
-Create a book for the author whose id is 1, with a price of 7.95:
+Create a book for the author whose id is "8c5db983-b824-4120-b07b-179f97575b77" 
+(replace this with a real author ID from your database), with a price of 7.95:
 ```graphql
 mutation createBook {
-  createBook(title: "Book Title", authorId: 1, price: 7.95) {
+  createBook(
+    title: "Book Title"
+    authorId: "8c5db983-b824-4120-b07b-179f97575b77"
+    price: 7.95
+  ) {
     id
   }
 }
