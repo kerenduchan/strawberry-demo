@@ -66,16 +66,16 @@ query books {
 Get all authors (limited to the first 100) whose name starts with "Jo":
 ```graphql
 query authors {
-authors(filter: { name: { startsWith: "Jo" }}) {
+  authors(filter: { name: { startsWith: "Jo" }}) {
     items {
-      id 
+      id
       name
       books {
         id
         title
       }
     }
-    totalItemsCount    
+    totalItemsCount
   }
 }
 ```
