@@ -7,16 +7,16 @@ async def create_book(
         session: AsyncSession,
         title: str,
         price: float,
-        author_id: int) -> Book:
+        author_id: str) -> Book:
     rec = Book(title=title, price=price, author_id=author_id)
     return await db.utils.create(session, rec)
 
 
 async def update_book(
         session: AsyncSession,
-        book_id: int,
+        book_id: str,
         title: str | None,
-        author_id: int | None) -> Book:
+        author_id: str | None) -> Book:
     values = {}
     if title is not None:
         values['title'] = title
@@ -24,10 +24,10 @@ async def update_book(
         values['author_id'] = author_id
 
     return await db.utils.update(
-        session, Book, int(book_id), values)
+        session, Book, book_id, values)
 
 
 async def delete_book(
         session: AsyncSession,
-        book_id: int) -> int:
+        book_id: str) -> int:
     return await db.utils.delete(session, Book, book_id)

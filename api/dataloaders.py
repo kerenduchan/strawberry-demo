@@ -22,7 +22,7 @@ def _build_id_fn(class_: DbTableClass):
     """ return a dataloader function for getting all objects of
     the given class by the given list of IDs """
 
-    async def get_by_ids(ids: List[int]) -> List[class_]:
+    async def get_by_ids(ids: List[str]) -> List[class_]:
         async with session_maker() as session:
             sql = select(class_).where(class_.id.in_(ids))
             res = await session.execute(sql)

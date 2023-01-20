@@ -25,7 +25,7 @@ class Book:
 
     @strawberry.field()
     async def author(self, info) -> Annotated["Author", strawberry.lazy("api.author")]:
-        rec = await info.context.dataloaders['author_by_id'].load(int(self.author_id))
+        rec = await info.context.dataloaders['author_by_id'].load(self.author_id)
         return api.author.Author.from_db(rec)
 
     @staticmethod

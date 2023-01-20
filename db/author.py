@@ -13,16 +13,16 @@ async def create_author(
 
 async def update_author(
         session: AsyncSession,
-        author_id: int,
+        author_id: str,
         name: str) -> Author:
     values = {'name': name}
     return await db.utils.update(
-        session, db.schema.Author, int(author_id), values)
+        session, db.schema.Author, author_id, values)
 
 
 async def delete_author(
         session: AsyncSession,
-        author_id: int) -> int:
+        author_id: str) -> int:
     # check if this author has any books
     sql = sqlalchemy.select(Book).\
         where(Book.author_id == author_id).limit(1)

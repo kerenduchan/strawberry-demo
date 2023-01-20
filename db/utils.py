@@ -58,7 +58,7 @@ async def get(
 
 async def update(session: AsyncSession,
                  class_: T,
-                 item_id: int,
+                 item_id: str,
                  values: Dict[str, Any]):
 
     if not values:
@@ -86,7 +86,7 @@ async def update(session: AsyncSession,
     return rec
 
 
-async def delete(session: AsyncSession, class_: T, id_: int) -> int:
+async def delete(session: AsyncSession, class_: T, id_: str) -> int:
     sql = sqlalchemy.delete(class_).\
         where(class_.id == id_)
     res = await session.execute(sql)
